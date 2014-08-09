@@ -1,16 +1,17 @@
+// проверить конструктор с аргументом double без точки
+// проверить конструктор с аргументом double с точкой 9.0
+// отрицательный аргумент
+//
 
 package FractionPack;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
-
 
 class Fr{
 	//int intNum; 		// целая часть для смешанных дробей
 	private int num;    		// числитель
 	private int denom;			// знаменатель
 	private double fraction;	// вычисление - десятичная дробь
-	 
 	
 	Fr(){
 		num = 0;
@@ -111,17 +112,25 @@ class Fr{
 		fraction = (double)num/(double)denom;
 	}
 	
-	void setfr (double x){
+	public void setfr (double x){
 		double2frac(x);
 		reducFr(num,denom);
 		fraction = (double)num/(double)denom;	
 	}
+	
+	public Fr multiply (Fr a, Fr b){
+		Fr c = new Fr();
+		c.num = a.num * b.num;
+		c.denom = a.denom * b.denom;
+		return c;
+	}
+	
 }
 
 public class ProgramFraction {
 
 	public static void main(String[] args) {
-		Fr a = new Fr(1.1);
+		Fr a = new Fr(0.5);
 		a.showFr();
 		
 		a.setfr(10.3);
