@@ -5,13 +5,13 @@
 
 package FractionPack;
 import java.math.BigDecimal;
-import java.math.MathContext;
+//import java.math.MathContext;
 
 class Fr{
-	//int intNum; 		// целая часть для смешанных дробей
-	private int num;    		// числитель
-	private int denom;			// знаменатель
-	private double fraction;	// вычисление - десятичная дробь
+	private int num;    		// Numerator
+	private int denom;			// Deumerator
+	private double fraction;	// Decimal fraction
+	//private int clm;          // Lowest Common Multiple 
 	
 	Fr(){
 		num = 0;
@@ -19,31 +19,28 @@ class Fr{
 	}
 	
 	Fr(Double x){		
-		System.out.println(" сработал конструктор с 1парам ");
 		double2frac(x);
 	}
 	
-	Fr(int x, int y){
-		System.out.println(" сработал конструктор с 2парам ");
+	Fr(int x, int y){		 			// constructor for 2 arguments
 		num = x;
 		denom = y;
-		reducFr(num,denom);
+		reducFr(num,denom);  			// fraction's reduction
 		fraction = (double)num/(double)denom;
 	}
 	
-	Fr(int z, int x, int y){ // конструктор для смешанной дроби
-		System.out.println(" сработал конструктор с парам ");
-		num = z*y+x;         // превращаем смешанную дробь в неправильную
+	Fr(int z, int x, int y){ 			// constructor with 3 argument
+		num = z*y+x;         			// convert mixed fraction to improper fraction
 		denom = y;
-		reducFr(num,denom);  // сокращаем
+		reducFr(num,denom);  			// fraction's reduction
 		fraction = (double)num/(double)denom;
 	}
 	
-	private void Str2frac (String dec){//раскладывает десят.дробь из строки в простую, - с числителем, знаменателем и целой частью 
+	private void Str2frac (String dec){                                //convert String decimal fraction to simple fraction 
 		denom=1;
-		int m = Integer.parseInt(dec.substring(0, dec.indexOf(".")));
-		int k = dec.substring(dec.indexOf(".")+1).length(); 
-		for (int i=0; i<k;i++)	denom*=10;
+		int m = Integer.parseInt(dec.substring(0, dec.indexOf(".")));  //searching of integer part 
+		int k = dec.substring(dec.indexOf(".")+1).length();            //searching of length of decimal part. We need it for 
+		for (int i=0; i<k;i++)	denom*=10;                             // calculating of denominator
 		num = Integer.parseInt(dec.substring(dec.indexOf(".")+1))+m*denom;
 	}
 	
@@ -59,14 +56,14 @@ class Fr{
 			String dec = bigDec.toPlainString();			   //convert BigDecimal to String 
 			Str2frac(dec);                                     //pass String value for dividing to integer and decimal part   
 			reducFr(num,denom);                                //fraction's reduction
-			fraction = (double)num/(double)denom;			   //
+			fraction = (double)num/(double)denom;			   
 		}
 	}
 	
 	private void reducFr(int x, int y){  // fraction's reduction
 		if (y==0) {
 		   System.out.println("ERROR! Denominator can't be equaled 0!");
-		   y=1;
+		   
 		   return;
 	      } else if (x==0) {
 			 this.num = 0;
@@ -74,7 +71,7 @@ class Fr{
 			 fraction = 0;
 		} else if (x<y){
 			 for (int i=x; i>1; i--){
-				    if ((x%i)==0 &&(y%i==0)){  // ищем НОД
+				    if ((x%i)==0 &&(y%i==0)){  // searching of Lowest Common Multiple
 				    	this.num=x/i;
 				    	this.denom=y/i;
 				    	break;
@@ -101,8 +98,8 @@ class Fr{
 	}
 	
 	void showFr(){	
-		System.out.println(num+" / "+denom);
-		System.out.println(fraction);
+		System.out.print(""+num+" / "+denom);
+		System.out.print(" ( "+fraction+" ) \n\n");
 	}
 	
 	public void setfr (int x, int y){
@@ -118,26 +115,103 @@ class Fr{
 		fraction = (double)num/(double)denom;	
 	}
 	
-	public Fr multiply (Fr a, Fr b){
+	public Fr Multiply (Fr a, Fr b){
 		Fr c = new Fr();
 		c.num = a.num * b.num;
 		c.denom = a.denom * b.denom;
+		c.reducFr(c.num,c.denom);
+		c.fraction = a.fraction * b.fraction;
 		return c;
 	}
 	
-}
+	public Fr Divide (Fr x, Fr y){
+		Fr c = new Fr();
+		c.num = x.num * y.denom;
+		c.denom = x.denom * y.num;
+		c.reducFr(c.num,c.denom);
+		c.fraction = x.fraction / y.fraction;
+		return c;
+	}
+	
+	public double CalcSimpleFr (int x, int y){
+		double d=x/y;
+		return d;
+	}
+	
+	public Fr Addition (Fr x, Fr y){  //Method of ADDITION
+		Fr c = new Fr();
+		first: {   // searching of Lowest Common Multiple
+			for(int i=1;i<x.denom+1;i++){
+				for(int j=1;j<y.denom+1;j++){
+					if ((j*x.denom)>(i*y.denom)) break;
+					if ((j*x.denom)==(i*y.denom)){
+					y.denom=i*y.denom; 
+					y.num=i*y.num; 
+					x.denom=j*x.denom; 
+					x.num=j*x.num;
+					break first; 
+					}
+				}
+			}
+		}
+		c.num = x.num + y.num;
+		c.denom = y.denom;
+		c.fraction = (double)c.num/(double)c.denom;
+		return c;
+	}  // ================= end of Addition method
+
+	public Fr Subtraction (Fr x, Fr y){  // Method of Subtraction
+		Fr c = new Fr();
+		first: {
+			for(int i=1;i<x.denom+1;i++){
+				for(int j=1;j<y.denom+1;j++){
+					if ((j*x.denom)>(i*y.denom)) break;
+					if ((j*x.denom)==(i*y.denom)){
+					y.denom=i*y.denom; 
+					y.num=i*y.num; 
+					x.denom=j*x.denom; 
+					x.num=j*x.num;
+					break first; 
+					}
+				}
+			}
+		}
+		c.num = x.num - y.num;
+		c.denom = y.denom;
+		c.fraction = (double)c.num/(double)c.denom;
+		return c;
+	}  // ================= End of Subtraction method	
+	
+}   // ============= End of class Fr ==============
 
 public class ProgramFraction {
 
 	public static void main(String[] args) {
-		Fr a = new Fr(0.5);
+		System.out.println("Given:  ");
+		Fr a = new Fr(2,1);
+		System.out.print("Fraction A  ");
 		a.showFr();
-		
-		a.setfr(10.3);
-		a.showFr();
-		
-		a.setfr(105,13);
-		a.showFr();	
 
-	}
+		Fr b = new Fr(0.005);
+		System.out.print("Fraction B  ");
+		b.showFr();
+		
+		Fr c = new Fr();
+		
+		c = c.Multiply(a,b);
+		System.out.print(" * result of multiplication is ");
+		c.showFr();     
+		
+		c = c.Divide(a,b);
+		System.out.print(" / result of division is ");
+		c.showFr();
+
+		c = c.Addition(a,b);
+		System.out.print(" + result of addition is ");
+		c.showFr(); 
+		
+		c = c.Subtraction(a,b); 
+		System.out.print(" - result of subtraction is ");  		
+		c.showFr();
+	} 
 }
