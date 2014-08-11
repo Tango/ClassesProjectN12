@@ -182,7 +182,7 @@ class Fr{
 		return c;
 	}  // ================= End of Subtraction method	
 	
-}   // ============= End of class Fr ==============
+}   // ============= End of class Fr ============
 
 public class ProgramFraction {
 
