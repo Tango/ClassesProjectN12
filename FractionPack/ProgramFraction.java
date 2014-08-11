@@ -102,16 +102,16 @@ class Fr{
 		System.out.print(" ( "+fraction+" ) \n\n");
 	}
 	
-	public void setfr (int x, int y){
+	public void setfr (int x, int y){ // setter with 2 arguments
 		num = x;
 		denom = y;
-		reducFr(num,denom);
+		reducFr(num,denom);    // fraction's reduction
 		fraction = (double)num/(double)denom;
 	}
 	
-	public void setfr (double x){
+	public void setfr (double x){  // setter with 1 arguments? type of double
 		double2frac(x);
-		reducFr(num,denom);
+		reducFr(num,denom);    // fraction's reduction
 		fraction = (double)num/(double)denom;	
 	}
 	
@@ -119,7 +119,7 @@ class Fr{
 		Fr c = new Fr();
 		c.num = a.num * b.num;
 		c.denom = a.denom * b.denom;
-		c.reducFr(c.num,c.denom);
+		c.reducFr(c.num,c.denom);    // fraction's reduction
 		c.fraction = a.fraction * b.fraction;
 		return c;
 	}
@@ -128,7 +128,7 @@ class Fr{
 		Fr c = new Fr();
 		c.num = x.num * y.denom;
 		c.denom = x.denom * y.num;
-		c.reducFr(c.num,c.denom);
+		c.reducFr(c.num,c.denom);    // fraction's reduction
 		c.fraction = x.fraction / y.fraction;
 		return c;
 	}
@@ -182,6 +182,52 @@ class Fr{
 		return c;
 	}  // ================= End of Subtraction method	
 	
+	public Fr Highest (Fr x, Fr y){  // Comparing method. Returns the highest fraction
+		Fr c = new Fr();
+		first: {
+			for(int i=1;i<x.denom+1;i++){
+				for(int j=1;j<y.denom+1;j++){
+					if ((j*x.denom)>(i*y.denom)) break;
+					if ((j*x.denom)==(i*y.denom)){
+					y.denom=i*y.denom; 
+					y.num=i*y.num; 
+					x.denom=j*x.denom; 
+					x.num=j*x.num;
+					break first; 
+					}
+				}
+			}
+		}	 
+		c.num = (x.num > y.num)? x.num : y.num;
+		c.denom = y.denom;
+		c.fraction = (double)c.num/(double)c.denom;
+		c.reducFr(c.num,c.denom);      // fraction's reduction
+		return c;
+	}  // ================= End of Highest method	
+	
+	public Fr Lowest (Fr x, Fr y){  // Comparing method. Returns the LOWest fraction
+		Fr c = new Fr();
+		first: {
+			for(int i=1;i<x.denom+1;i++){
+				for(int j=1;j<y.denom+1;j++){
+					if ((j*x.denom)>(i*y.denom)) break;
+					if ((j*x.denom)==(i*y.denom)){
+					y.denom=i*y.denom; 
+					y.num=i*y.num; 
+					x.denom=j*x.denom; 
+					x.num=j*x.num;
+					break first; 
+					}
+				}
+			}
+		}	 
+		c.num = (x.num < y.num)? x.num : y.num;
+		c.denom = y.denom;
+		c.fraction = (double)c.num/(double)c.denom;
+		c.reducFr(c.num,c.denom);      // fraction's reduction
+		return c;
+	}  // ================= End of Lowest method	
+	
 }   // ============= End of class Fr ============
 
 public class ProgramFraction {
@@ -189,14 +235,22 @@ public class ProgramFraction {
 	public static void main(String[] args) {
 		System.out.println("Given:  ");
 		Fr a = new Fr(2,1);
-		System.out.print("Fraction A  ");
+		System.out.print("Fraction A =  ");
 		a.showFr();
 
 		Fr b = new Fr(0.005);
-		System.out.print("Fraction B  ");
+		System.out.print("Fraction B =  ");
 		b.showFr();
 		
 		Fr c = new Fr();
+		
+		c = c.Highest(a,b); 
+		System.out.print(" > result of the Highest comparing is ");  		
+		c.showFr();
+
+		c = c.Lowest(a,b); 
+		System.out.print(" > result of the Lowest comparing is ");  		
+		c.showFr();
 		
 		c = c.Multiply(a,b);
 		System.out.print(" * result of multiplication is ");
@@ -213,5 +267,7 @@ public class ProgramFraction {
 		c = c.Subtraction(a,b); 
 		System.out.print(" - result of subtraction is ");  		
 		c.showFr();
+		
+
 	} 
 }
